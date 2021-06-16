@@ -37,8 +37,12 @@ public class OBMetaEvent implements Listener {
     @EventHandler
     public void onPlayerDisconnect(PlayerDisconnectEvent event) {
     	// add event to the tracker
-    	tracker.print("PlayerDisconnectEvent#" + event.getPlayer().getName() + "#ob-" + event.getPlayer().getServer().getInfo().getName() + "#" + getTimestamp() + "\n");
-    	tracker.flush();
+    	try {
+    		tracker.print("PlayerDisconnectEvent#" + event.getPlayer().getName() + "#ob-" + event.getPlayer().getServer().getInfo().getName() + "#" + getTimestamp() + "\n");
+    		tracker.flush();
+    	} catch (NullPointerException e) {
+    		// catches timeout events
+    	}
     }
     
     @EventHandler

@@ -1,7 +1,7 @@
 name: OBMetaProducerBungee
 main: net.obmc.OBMetaProducerBungee.OBMetaProducer
 version: 0.1
-api-version: 1.15
+api-version: 1.17
 author: Fahrenheit451
 description: Gather BungeeCord events into file for monitoring
 website: http://ob-mc.net
