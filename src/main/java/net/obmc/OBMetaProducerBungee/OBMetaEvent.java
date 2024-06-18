@@ -51,7 +51,7 @@ public class OBMetaEvent implements Listener {
     
     private void logTrackerMsg( String msg ) {
     	
-    	try (RandomAccessFile stream = new RandomAccessFile( OBMetaProducer.metafile, "rw" );
+    	try ( RandomAccessFile stream = new RandomAccessFile( OBMetaProducer.metafile, "rw" );
     		     FileChannel channel = stream.getChannel()) {
 
     		    // Use tryLock() or lock() to block until the lock is acquired
