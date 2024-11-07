@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -13,12 +14,16 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 public class OBMetaProducer extends Plugin {
 	
+	public static OBMetaProducer instance;
+
 	public static String metafile;
 	Configuration config = null;
 	public static String program = "OBMetaProducerBungee";
 	
 	@Override
 	public void onEnable() {
+
+		instance = this;
 
 		getLogger().info("[" + program + "] Plugin loaded");
 		
@@ -78,5 +83,9 @@ public class OBMetaProducer extends Plugin {
 	public void Register() {
 		// register our event handler
 		getProxy().getPluginManager().registerListener( this, new OBMetaEvent() );
+	}
+
+	public static OBMetaProducer getInstance() {
+		return instance;
 	}
 }

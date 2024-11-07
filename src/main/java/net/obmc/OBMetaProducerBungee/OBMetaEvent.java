@@ -3,6 +3,7 @@ package net.obmc.OBMetaProducerBungee;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -11,9 +12,11 @@ import java.util.Date;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -25,6 +28,17 @@ public class OBMetaEvent implements Listener {
 	public OBMetaEvent() {
 	}
 	
+	@EventHandler
+    public void onPreLogin(PreLoginEvent event) {
+        PendingConnection connection = event.getConnection();
+        SocketAddress ipAddress = connection.getSocketAddress();
+        OBMetaProducer.getInstance().getLogger().info("Connection coming from " + ipAddress.toString() + " for " + connection.getName() + ", ver: " + connection.getVersion());
+        if ( connection.getName().equals( "MCList" ) ) {
+        	OBMetaProducer.getInstance().getLogger().info("Disconnected " + connection.getName());
+        	connection.disconnect( new TextComponent( "You are not approved to connect to ob-mc.net" ) );
+        }
+    }
+
     @EventHandler
     public void onPostLogin(PostLoginEvent event) {
     	// send message to all players that someone has joined OB
@@ -37,8 +51,17 @@ public class OBMetaEvent implements Listener {
     
     @EventHandler
     public void onPlayerDisconnect( PlayerDisconnectEvent event ) {
+    	
+    	String server = "ob-lobby";
+    	
     	// add event to the tracker
-   		String disconnectMsg = "PlayerDisconnectEvent#" + event.getPlayer().getName() + "#ob-" + event.getPlayer().getServer().getInfo().getName() + "#" + getTimestamp();
+    	if ( event.getPlayer() == null ) {
+    		OBMetaProducer.getInstance().getLogger().info("Player is null");
+    	}
+    	if ( event.getPlayer().getServer() != null ) {
+    		server = event.getPlayer().getServer().getInfo().getName();
+    	}
+   		String disconnectMsg = "PlayerDisconnectEvent#" + event.getPlayer().getName() + "#ob-" + server + "#" + getTimestamp();
    		logTrackerMsg( disconnectMsg );
     }
     
